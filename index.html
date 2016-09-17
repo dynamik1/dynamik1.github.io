@@ -90,7 +90,7 @@ http://www.html5rocks.com/en/tutorials/device/orientation/
 		    // alpha is the compass direction the device is facing in degrees
 		    var dir = eventData.alpha
 		    // call our orientation event handler
-		    deviceOrientationHandler(tiltLR, tiltFB+90, dir);
+		    deviceOrientationHandler(tiltLR, tiltFB-90, dir);
 		  }, false);
 		} else {
 		  document.getElementById("doEvent").innerHTML = "Not supported."
