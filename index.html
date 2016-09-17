@@ -46,6 +46,11 @@ http://www.html5rocks.com/en/tutorials/device/orientation/
 					renderer.render(scene, camera );
 
 					function deviceOrientationHandler(tiltLR, tiltFB, dir) {
+
+						document.getElementById("LRdata").innerHTML = "LR: "+Math.round(tiltLR);
+						document.getElementById("FBdata").innerHTML = "FB: "+Math.round(tiltFB);
+						document.getElementById("DIdata").innerHTML = "DI: "+Math.round(dir);
+
 						mesh.rotation.set(0,0,0);
 						mesh.rotateX(Math.cos(tiltFB*0.0174533));
 						mesh.rotateY(-Math.sin(dir*0.0174533));
@@ -91,7 +96,9 @@ http://www.html5rocks.com/en/tutorials/device/orientation/
 		</style>
 	</head>
 	<body>
-		ver 1.11
+		<div id="LRdata"></div>
+		<div id="FBdata"></div>
+		<div id="DIdata"></div>
 		<div id="threecanvas"></div>
 	</body>
 	<script type="text/javascript">
