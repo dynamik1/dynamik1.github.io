@@ -46,10 +46,6 @@ http://www.html5rocks.com/en/tutorials/device/orientation/
 					renderer.render(scene, camera );
 
 					function deviceOrientationHandler(tiltLR, tiltFB, dir) {
-						document.getElementById("doTiltLR").innerHTML = 20*Math.sin(tiltLR*0.0174533)//Math.round(tiltLR);
-						document.getElementById("doTiltFB").innerHTML = 20*Math.cos(tiltFB*0.0174533)//Math.round(tiltFB);
-						document.getElementById("doDirection").innerHTML = 20*Math.sin(dir*0.0174533);
-						// Apply the transform to the image
 						mesh.rotation.set(0,0,0);
 						mesh.rotateX(Math.sin(dir*0.0174533) );
 						mesh.rotateY(Math.sin(tiltLR*0.0174533) );
@@ -60,7 +56,6 @@ http://www.html5rocks.com/en/tutorials/device/orientation/
 					}
 
 					if (window.DeviceOrientationEvent) {
-					  document.getElementById("doEvent").innerHTML = "DeviceOrientation";
 					  // Listen for the deviceorientation event and handle the raw data
 					  window.addEventListener('deviceorientation', function(eventData) {
 					    // in landscape orientation, gamma is front/back, beta is the 'tilt' left/right
@@ -69,10 +64,7 @@ http://www.html5rocks.com/en/tutorials/device/orientation/
 					    var dir = eventData.alpha
 					    deviceOrientationHandler(tiltLR, tiltFB, dir);
 					  }, false);
-					} else {
-					  document.getElementById("doEvent").innerHTML = "Not supported."
 					}
-
 
 			};
 		</script>
@@ -100,27 +92,6 @@ http://www.html5rocks.com/en/tutorials/device/orientation/
 	</head>
 	<body>
 		ver 1.0
-		<div class="main">
-		  <h2>Device Orientation</h2>
-		  <table>
-		    <tr>
-		      <td>Event Supported</td>
-		      <td id="doEvent"></td>
-		    </tr>
-		    <tr>
-		      <td>Tilt Left/Right [gamma]</td>
-		      <td id="doTiltLR"></td>
-		    </tr>
-		    <tr>
-		      <td>Tilt Front/Back [beta]</td>
-		      <td id="doTiltFB"></td>
-		    </tr>
-		    <tr>
-		      <td>Direction [alpha]</td>
-		      <td id="doDirection"></td>
-		    </tr>
-		   </table>
-		</div>
 		<div id="threecanvas"></div>
 	</body>
 	<script type="text/javascript">
