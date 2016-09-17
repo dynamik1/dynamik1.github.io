@@ -33,10 +33,8 @@ http://www.html5rocks.com/en/tutorials/device/orientation/
 		}
 		</style>
 		<script type="text/javascript">
-			if (window.DeviceOrientationEvent) {
- 				console.log("DeviceOrientation is supported");
 				window.addEventListener('deviceorientation', devOrientHandler, false);
-			}
+
 			if (window.DeviceOrientationEvent) {
 			  document.getElementById("doEvent").innerHTML = "DeviceOrientation";
 			  // Listen for the deviceorientation event and handle the raw data
