@@ -51,9 +51,9 @@ http://www.html5rocks.com/en/tutorials/device/orientation/
 						document.getElementById("doDirection").innerHTML = 20*Math.sin(dir*0.0174533);
 						// Apply the transform to the image
 						mesh.rotation.set(0,0,0);
-						mesh.rotateX( 20*Math.sin(dir*0.0174533) );
-						mesh.rotateY( 20*Math.sin(tiltFB*0.0174533) );
-						mesh.rotateZ( 20*Math.sin(tiltLR*0.0174533) );
+						mesh.rotateX(Math.sin(dir*0.0174533) );
+						mesh.rotateY(Math.sin(tiltFB*0.0174533) );
+						mesh.rotateZ(Math.sin(tiltLR*0.0174533) );
 						camera.position.set( 0 , 0 , 20 );
 						camera.lookAt( scene.position );
 						renderer.render(scene, camera);
