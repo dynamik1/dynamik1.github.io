@@ -46,14 +46,14 @@ http://www.html5rocks.com/en/tutorials/device/orientation/
 					renderer.render(scene, camera );
 
 					function deviceOrientationHandler(tiltLR, tiltFB, dir) {
-						document.getElementById("doTiltLR").innerHTML = Math.round(tiltLR);
-						document.getElementById("doTiltFB").innerHTML = Math.round(tiltFB);
+						document.getElementById("doTiltLR").innerHTML = 20*Math.sin(tiltLR)//Math.round(tiltLR);
+						document.getElementById("doTiltFB").innerHTML = 20*Math.cos(tiltFB)//Math.round(tiltFB);
 						document.getElementById("doDirection").innerHTML = Math.round(dir);
 						// Apply the transform to the image
 						//mesh.rotateX(tiltLR);
 						//mesh.rotateY(tiltFB);
 						//mesh.rotateZ(dir);
-						camera.position.set( 0 , 20*Math.cos(tiltFB/180), 20*Math.sin(tiltLR/180) );
+						camera.position.set( 0 , 20*Math.cos(tiltFB), 20*Math.sin(tiltLR) );
 						camera.lookAt( scene.position );
 						renderer.render(scene, camera);
 					}
