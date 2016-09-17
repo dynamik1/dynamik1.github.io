@@ -53,7 +53,7 @@ http://www.html5rocks.com/en/tutorials/device/orientation/
 						//mesh.rotateX(tiltLR);
 						//mesh.rotateY(tiltFB);
 						//mesh.rotateZ(dir);
-						camera.position.set( tiltLR, tiltFB, dir );
+						camera.position.set( 80*Math.sin(tiltLR), 80*Math.cos(tiltFB), 0 );
 						camera.lookAt( scene.position );
 						renderer.render(scene, camera);
 					}
