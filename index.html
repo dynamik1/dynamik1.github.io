@@ -14,21 +14,21 @@
 			var scene = new THREE.Scene();
 
 			var rendererL = new THREE.WebGLRenderer();
-			rendererL.setSize( 365, 420 );
+			rendererL.setSize( 368, 420 );
 			document.getElementById("threecanvasL").appendChild( rendererL.domElement );
 			var cameraL = new THREE.PerspectiveCamera(
 					50,             // Field of view
-					365 / 420,      // Aspect ratio
+					368 / 420,      // Aspect ratio
 					0.1,            // Near plane
 					10000           // Far plane
 			);
 
 			var rendererR = new THREE.WebGLRenderer();
-			rendererR.setSize( 365, 420 );
+			rendererR.setSize( 368, 420 );
 			document.getElementById("threecanvasR").appendChild( rendererR.domElement );
 			var cameraR = new THREE.PerspectiveCamera(
 					50,             // Field of view
-					365 / 420,      // Aspect ratio
+					368 / 420,      // Aspect ratio
 					0.1,            // Near plane
 					10000           // Far plane
 			);
@@ -97,12 +97,19 @@
 				#threecanvasL {
 					float: left;
 				}
+				#container {
+					width: 736px;
+					height: 420;
+					overflow: hidden;
+				}
 
       }
       </style>
     </head>
     <body>
-			<div id="threecanvasL"></div>
-			<div id="threecanvasR"></div>
-    </body>
+			<div id="container">
+				<div id="threecanvasL"></div>
+				<div id="threecanvasR"></div>
+			</div>
+		</body>
   </html>
