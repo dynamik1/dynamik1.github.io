@@ -45,14 +45,11 @@ http://www.html5rocks.com/en/tutorials/device/orientation/
 					renderer.setClearColor( 0xdddddd, 1);
 					renderer.render( scene, camera );
 
-					var clock = new THREE.Clock;
-
 					function deviceOrientationHandler(tiltLR, tiltFB, dir) {
 						document.getElementById("doTiltLR").innerHTML = Math.round(tiltLR);
 						document.getElementById("doTiltFB").innerHTML = Math.round(tiltFB);
 						document.getElementById("doDirection").innerHTML = Math.round(dir);
 						// Apply the transform to the image
-						a = clock.getDelta();
 						mesh.rotateX(tiltLR);
 						mesh.rotateY(tiltFB);
 						mesh.rotateZ(dir);
