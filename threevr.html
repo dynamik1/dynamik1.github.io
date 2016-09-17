@@ -1,1 +1,77 @@
-{\rtf1}
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<link rel="icon" type="image/png" href="./icon_vr.png" />
+		<link rel="apple-touch-icon" href="./icon_vr.png">
+		<title>Three.js 360VR Demo</title>
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<script src="https://ajax.googleapis.com/ajax/libs/threejs/r76/three.min.js"></script>
+    <script src="./DeviceOrientationController.js"></script>
+    <script>
+
+    window.onload = function() {
+
+        var renderer = new THREE.WebGLRenderer();
+        renderer.setSize( 740, 420 );
+        document.getElementById("threecanvas").appendChild( renderer.domElement );
+        var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera(
+            50,             // Field of view
+            740 / 420,      // Aspect ratio
+            0.1,            // Near plane
+            10000           // Far plane
+        );
+        camera.position.set( 0, 0, 30 );
+        camera.lookAt( scene.position );
+
+        var geometry = new THREE.BoxGeometry( 10, 10, 10 );
+        var material = new THREE.MeshPhongMaterial( { color: 0xFF0000 } ); //, side: THREE.BackSide } );
+        var mesh = new THREE.Mesh( geometry, material );
+        scene.add( mesh );
+        mesh.position.set( 0, 0, 0 );
+
+        var light = new THREE.PointLight( 0xFFFFFF );
+        light.position.set( 10, 40, 20 );
+        scene.add( light );
+
+        var light = new THREE.PointLight( 0x888800 );
+        light.position.set( -10, -40, 20 );
+        scene.add( light );
+
+        renderer.setClearColor( 0xdddddd, 1);
+        renderer.render(scene, camera );
+
+        controls = new DeviceOrientationController( camera, renderer.domElement );
+        controls.connect();
+
+      }
+      </script>
+      <style>
+      @media screen {
+        html, body, div, span {
+          margin: 0;
+          padding: 0;
+          border: 0;
+          outline: 0;
+          font-size: 100%;
+          vertical-align: baseline;
+        }
+
+        body {
+          height: auto;
+          -webkit-text-size-adjust:none;
+          font-family:Helvetica, Arial, Verdana, sans-serif;
+          padding:0px;
+          overflow-x: hidden;
+        }
+
+      }
+      </style>
+    </head>
+    <body>
+      <div id="threecanvas"></div>
+      <div id="LRdata"></div>
+      <div id="FBdata"></div>
+      <div id="DIdata"></div>
+    </body>
+  </html>
