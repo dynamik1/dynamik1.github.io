@@ -14,21 +14,21 @@
 			var scene = new THREE.Scene();
 
 			var rendererL = new THREE.WebGLRenderer();
-			rendererL.setSize( 368, 420 );
+			rendererL.setSize( 330, 330 );
 			document.getElementById("threecanvasL").appendChild( rendererL.domElement );
 			var cameraL = new THREE.PerspectiveCamera(
-					50,             // Field of view
-					368 / 420,      // Aspect ratio
+				90,             // Field of view
+				330 / 330,      // Aspect ratio
 					0.1,            // Near plane
 					10000           // Far plane
 			);
 
 			var rendererR = new THREE.WebGLRenderer();
-			rendererR.setSize( 368, 420 );
+			rendererR.setSize( 330, 330 );
 			document.getElementById("threecanvasR").appendChild( rendererR.domElement );
 			var cameraR = new THREE.PerspectiveCamera(
-					50,             // Field of view
-					368 / 420,      // Aspect ratio
+					90,             // Field of view
+					330 / 330,      // Aspect ratio
 					0.1,            // Near plane
 					10000           // Far plane
 			);
@@ -98,9 +98,13 @@
 					float: left;
 				}
 				#container {
+					background-color: #000;
 					width: 736px;
 					height: 420;
 					overflow: hidden;
+				}
+				.eyeballs {
+					padding: 40px 25px;
 				}
 
       }
@@ -108,8 +112,8 @@
     </head>
     <body>
 			<div id="container">
-				<div id="threecanvasL"></div>
-				<div id="threecanvasR"></div>
+				<div id="threecanvasL" class="eyeballs"></div>
+				<div id="threecanvasR" class="eyeballs"></div>
 			</div>
 		</body>
   </html>
