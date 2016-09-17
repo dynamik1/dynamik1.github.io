@@ -50,9 +50,11 @@ http://www.html5rocks.com/en/tutorials/device/orientation/
 						document.getElementById("doTiltFB").innerHTML = Math.round(tiltFB);
 						document.getElementById("doDirection").innerHTML = Math.round(dir);
 						// Apply the transform to the image
-						mesh.rotateX(tiltLR);
-						mesh.rotateY(tiltFB);
-						mesh.rotateZ(dir);
+						//mesh.rotateX(tiltLR);
+						//mesh.rotateY(tiltFB);
+						//mesh.rotateZ(dir);
+						camera.position.set( tiltLR, tileFB, dir );
+						camera.lookAt( scene.position );
 						renderer.render(scene, camera);
 						requestAnimationFrame(render);
 					}
