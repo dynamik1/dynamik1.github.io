@@ -29,8 +29,8 @@ http://www.html5rocks.com/en/tutorials/device/orientation/
 					camera.position.set( 0, 0, 30 );
 					camera.lookAt( scene.position );
 
-					var geometry = new THREE.BoxGeometry( 5, 5, 5 );
-					var material = new THREE.MeshPhongMaterial( { color: 0xFF0000 } );
+					var geometry = new THREE.BoxGeometry( 50, 50, 50 );
+					var material = new THREE.MeshPhongMaterial( { color: 0xFF0000, side: THREE.BackSide } );
 					var mesh = new THREE.Mesh( geometry, material );
 					scene.add( mesh );
 
