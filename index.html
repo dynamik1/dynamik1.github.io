@@ -47,7 +47,7 @@ http://www.html5rocks.com/en/tutorials/device/orientation/
 
 					function deviceOrientationHandler(tiltLR, tiltFB, dir) {
 						mesh.rotation.set(0,0,0);
-						mesh.rotateX(Math.sin(tiltLR*0.0174533));
+						mesh.rotateX(Math.sin(tiltFB*0.0174533)); //front back
 						mesh.rotateY(0);//Math.sin(tiltFB*0.0174533));
 						mesh.rotateZ(0);//Math.sin(dir*0.0174533) );
 						camera.position.set( 0 , 0 , 20 );
