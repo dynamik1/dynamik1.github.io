@@ -11,18 +11,32 @@
 
     window.onload = function() {
 
-        var renderer = new THREE.WebGLRenderer();
-        renderer.setSize( 740, 420 );
-        document.getElementById("threecanvas").appendChild( renderer.domElement );
-        var scene = new THREE.Scene();
-        var camera = new THREE.PerspectiveCamera(
-            50,             // Field of view
-            740 / 420,      // Aspect ratio
-            0.1,            // Near plane
-            10000           // Far plane
-        );
-        camera.position.set( 0, 0, 0 );
-        camera.lookAt( scene.position );
+			var scene = new THREE.Scene();
+
+			var rendererL = new THREE.WebGLRenderer();
+			rendererL.setSize( 370, 420 );
+			document.getElementById("threecanvasL").appendChild( rendererL.domElement );
+			var cameraL = new THREE.PerspectiveCamera(
+					50,             // Field of view
+					370 / 420,      // Aspect ratio
+					0.1,            // Near plane
+					10000           // Far plane
+			);
+
+			var rendererR = new THREE.WebGLRenderer();
+			rendererR.setSize( 370, 420 );
+			document.getElementById("threecanvasR").appendChild( rendererR.domElement );
+			var cameraR = new THREE.PerspectiveCamera(
+					50,             // Field of view
+					370 / 420,      // Aspect ratio
+					0.1,            // Near plane
+					10000           // Far plane
+			);
+
+			cameraL.position.set( 0, 0, -1 );
+			cameraL.lookAt( scene.position );
+			cameraR.position.set( 0, 0, 1 );
+			cameraR.lookAt( scene.position );
 
         var geometry = new THREE.BoxGeometry( 50, 50, 50 );
         var material = new THREE.MeshPhongMaterial( { color: 0x888888, side: THREE.BackSide } );
@@ -38,15 +52,22 @@
         light.position.set( -10, -40, 20 );
         scene.add( light );
 
-        renderer.setClearColor( 0xdddddd, 1);
-        renderer.render(scene, camera );
+				rendererL.setClearColor( 0xdddddd, 1);
+        rendererL.render(scene, cameraL );
 
-        controls = new DeviceOrientationController( camera, renderer.domElement );
-        controls.connect();
+				rendererR.setClearColor( 0xdddddd, 1);
+        rendererR.render(scene, cameraR );
+
+				controlsL = new DeviceOrientationController( cameraL, rendererL.domElement );
+        controlsL.connect();
+				controlsR = new DeviceOrientationController( cameraR, rendererR.domElement );
+        controlsR.connect();
 
         function animate() {
-  				controls.update();
-  				renderer.render( scene, camera );
+					controlsL.update();
+					controlsR.update();
+					rendererL.render( scene, cameraL );
+					rendererR.render( scene, cameraR );
   				requestAnimationFrame( animate );
   			}
 
@@ -72,15 +93,16 @@
           font-family:Helvetica, Arial, Verdana, sans-serif;
           padding:0px;
           overflow-x: hidden;
-        }
+      	}
+				#threecanvasL {
+					float: left;
+				}
 
       }
       </style>
     </head>
     <body>
-      <div id="threecanvas"></div>
-      <div id="LRdata"></div>
-      <div id="FBdata"></div>
-      <div id="DIdata"></div>
+			<div id="threecanvasL"></div>
+			<div id="threecanvasR"></div>
     </body>
   </html>
