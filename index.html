@@ -15,14 +15,14 @@ http://www.html5rocks.com/en/tutorials/device/orientation/
 			window.onload = function() {
 
 					var renderer = new THREE.WebGLRenderer();
-					renderer.setSize( 800, 600 );
+					renderer.setSize( 800, 400 );
 					document.getElementById("threecanvas").appendChild( renderer.domElement );
 
 					var scene = new THREE.Scene();
 
 					var camera = new THREE.PerspectiveCamera(
 							35,             // Field of view
-							800 / 600,      // Aspect ratio
+							800 / 400,      // Aspect ratio
 							0.1,            // Near plane
 							10000           // Far plane
 					);
