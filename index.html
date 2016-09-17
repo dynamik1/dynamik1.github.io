@@ -53,9 +53,9 @@ http://www.html5rocks.com/en/tutorials/device/orientation/
 						document.getElementById("doDirection").innerHTML = Math.round(dir);
 						// Apply the transform to the image
 						a = clock.getDelta();
-						mesh.rotateX(a);
-						mesh.rotateY(a/2);
-						mesh.rotateZ(a/3);
+						mesh.rotateX(tiltLR);
+						mesh.rotateY(tiltFB);
+						mesh.rotateZ(dir);
 						renderer.render(scene, camera);
 						requestAnimationFrame(render);
 					}
