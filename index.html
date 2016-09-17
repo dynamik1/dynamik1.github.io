@@ -14,21 +14,21 @@
 			var scene = new THREE.Scene();
 
 			var rendererL = new THREE.WebGLRenderer();
-			rendererL.setSize( 370, 420 );
+			rendererL.setSize( 365, 420 );
 			document.getElementById("threecanvasL").appendChild( rendererL.domElement );
 			var cameraL = new THREE.PerspectiveCamera(
 					50,             // Field of view
-					370 / 420,      // Aspect ratio
+					365 / 420,      // Aspect ratio
 					0.1,            // Near plane
 					10000           // Far plane
 			);
 
 			var rendererR = new THREE.WebGLRenderer();
-			rendererR.setSize( 370, 420 );
+			rendererR.setSize( 365, 420 );
 			document.getElementById("threecanvasR").appendChild( rendererR.domElement );
 			var cameraR = new THREE.PerspectiveCamera(
 					50,             // Field of view
-					370 / 420,      // Aspect ratio
+					365 / 420,      // Aspect ratio
 					0.1,            // Near plane
 					10000           // Far plane
 			);
