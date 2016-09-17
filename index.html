@@ -10,6 +10,73 @@ http://www.html5rocks.com/en/tutorials/device/orientation/
 		<meta name="apple-touch-fullscreen" content="yes">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<script src="https://ajax.googleapis.com/ajax/libs/threejs/r76/three.min.js"></script>
+		<script type="text/javascript">
+			window.onload = function() {
+
+					var renderer = new THREE.WebGLRenderer();
+					renderer.setSize( 800, 600 );
+					document.getElementById("threecanvas").appendChild( renderer.domElement );
+
+					var scene = new THREE.Scene();
+
+					var camera = new THREE.PerspectiveCamera(
+							35,             // Field of view
+							800 / 600,      // Aspect ratio
+							0.1,            // Near plane
+							10000           // Far plane
+					);
+					camera.position.set( 0, 0, 30 );
+					camera.lookAt( scene.position );
+
+					var geometry = new THREE.BoxGeometry( 5, 5, 5 );
+					var material = new THREE.MeshPhongMaterial( { color: 0xFF0000 } );
+					var mesh = new THREE.Mesh( geometry, material );
+					scene.add( mesh );
+
+					var light = new THREE.PointLight( 0xFFFFFF );
+					light.position.set( 10, 40, 20 );
+					scene.add( light );
+
+					var light = new THREE.PointLight( 0x888800 );
+					light.position.set( -10, -40, 20 );
+					scene.add( light );
+
+					renderer.setClearColor( 0xdddddd, 1);
+					renderer.render( scene, camera );
+
+					var clock = new THREE.Clock;
+
+					function deviceOrientationHandler(tiltLR, tiltFB, dir) {
+						document.getElementById("doTiltLR").innerHTML = Math.round(tiltLR);
+						document.getElementById("doTiltFB").innerHTML = Math.round(tiltFB);
+						document.getElementById("doDirection").innerHTML = Math.round(dir);
+						// Apply the transform to the image
+						a = clock.getDelta();
+						mesh.rotateX(a);
+						mesh.rotateY(a/2);
+						mesh.rotateZ(a/3);
+						renderer.render(scene, camera);
+						requestAnimationFrame(render);
+					}
+
+					if (window.DeviceOrientationEvent) {
+					  document.getElementById("doEvent").innerHTML = "DeviceOrientation";
+					  // Listen for the deviceorientation event and handle the raw data
+					  window.addEventListener('deviceorientation', function(eventData) {
+					    // in landscape orientation, gamma is front/back, beta is the 'tilt' left/right
+					    var tiltFB = eventData.gamma;
+					    var tiltLR = eventData.beta;
+					    var dir = eventData.alpha
+					    deviceOrientationHandler(tiltLR, tiltFB, dir);
+					  }, false);
+					} else {
+					  document.getElementById("doEvent").innerHTML = "Not supported."
+					}
+
+
+			};
+		</script>
 		<style>
 		@media screen {
 			html, body, div, span {
@@ -54,28 +121,9 @@ http://www.html5rocks.com/en/tutorials/device/orientation/
 		    </tr>
 		   </table>
 		</div>
-
+		<div id="threecanvas"></div>
 	</body>
 	<script type="text/javascript">
-		function deviceOrientationHandler(tiltLR, tiltFB, dir) {
-			document.getElementById("doTiltLR").innerHTML = Math.round(tiltLR);
-			document.getElementById("doTiltFB").innerHTML = Math.round(tiltFB);
-			document.getElementById("doDirection").innerHTML = Math.round(dir);
-			// Apply the transform to the image
-		}
 
-		if (window.DeviceOrientationEvent) {
-		  document.getElementById("doEvent").innerHTML = "DeviceOrientation";
-		  // Listen for the deviceorientation event and handle the raw data
-		  window.addEventListener('deviceorientation', function(eventData) {
-		    // in landscape orientation, gamma is front/back, beta is the 'tilt' left/right
-		    var tiltFB = eventData.gamma;
-		    var tiltLR = eventData.beta;
-		    var dir = eventData.alpha
-		    deviceOrientationHandler(tiltLR, tiltFB, dir);
-		  }, false);
-		} else {
-		  document.getElementById("doEvent").innerHTML = "Not supported."
-		}
 	</script>
 </html>
