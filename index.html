@@ -84,9 +84,9 @@ http://www.html5rocks.com/en/tutorials/device/orientation/
 		  // Listen for the deviceorientation event and handle the raw data
 		  window.addEventListener('deviceorientation', function(eventData) {
 		    // gamma is the left-to-right tilt in degrees, where right is positive
-		    var tiltLR = eventData.gamma;
+		    var tiltFB = eventData.gamma;
 		    // beta is the front-to-back tilt in degrees, where front is positive
-		    var tiltFB = eventData.beta;
+		    var tiltLR = eventData.beta;
 		    // alpha is the compass direction the device is facing in degrees
 		    var dir = eventData.alpha
 		    // call our orientation event handler
