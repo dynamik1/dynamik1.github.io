@@ -50,6 +50,7 @@ http://www.html5rocks.com/en/tutorials/device/orientation/
 						document.getElementById("doTiltFB").innerHTML = 20*Math.cos(tiltFB*0.0174533)//Math.round(tiltFB);
 						document.getElementById("doDirection").innerHTML = 20*Math.sin(dir*0.0174533);
 						// Apply the transform to the image
+						mesh.rotation.set(0,0,0);
 						mesh.rotateX( 20*Math.sin(dir*0.0174533) );
 						mesh.rotateY( 20*Math.sin(tiltFB*0.0174533) );
 						mesh.rotateZ( 20*Math.sin(tiltLR*0.0174533) );
