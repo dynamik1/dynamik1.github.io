@@ -1,0 +1,98 @@
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Getting Started with Three.js</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/threejs/r76/three.min.js"></script>
+        <script>
+        window.onload = function() {
+
+            var renderer = new THREE.WebGLRenderer();
+            renderer.setSize( 800, 600 );
+            document.body.appendChild( renderer.domElement );
+
+            var scene = new THREE.Scene();
+
+            var camera = new THREE.PerspectiveCamera(
+                35,             // Field of view
+                800 / 600,      // Aspect ratio
+                0.1,            // Near plane
+                10000           // Far plane
+            );
+            camera.position.set( 0, 0, 30 );
+            camera.lookAt( scene.position );
+
+            var geometry = new THREE.BoxGeometry( 5, 5, 5 );
+            var material = new THREE.MeshPhongMaterial( { color: 0xFF0000 } );
+            var mesh = new THREE.Mesh( geometry, material );
+            scene.add( mesh );
+
+            var light = new THREE.PointLight( 0xFFFFFF );
+            light.position.set( 10, 40, 20 );
+            scene.add( light );
+
+            var light = new THREE.PointLight( 0x888800 );
+            light.position.set( -10, -40, 20 );
+            scene.add( light );
+
+            renderer.setClearColor( 0xdddddd, 1);
+            renderer.render( scene, camera );
+
+            var gyro = { "x":0, "y":0, "z":0, "w":1 }
+
+            function quatFromAxisAngle(x,y,z,angle)
+            {
+            	var q={};
+                var half_angle = angle/2;
+                q.x = x * Math.sin(half_angle);
+                q.y = y * Math.sin(half_angle);
+                q.z = z * Math.sin(half_angle);
+                q.w = Math.cos(half_angle);
+            	return q;
+            }
+
+            //get gyro orientation info
+            if (window.DeviceOrientationEvent) {
+                window.addEventListener("deviceorientation", function () {
+                    var x = degToRad(event.beta) ; // beta value
+                  	var y = degToRad(event.gamma) ; // gamma value
+                  	var z = degToRad(event.alpha) ; // alpha value
+                  	//precompute to save on processing time
+                  	var cX = Math.cos( x/2 );
+                  	var cY = Math.cos( y/2 );
+                  	var cZ = Math.cos( z/2 );
+                  	var sX = Math.sin( x/2 );
+                  	var sY = Math.sin( y/2 );
+                  	var sZ = Math.sin( z/2 );
+                  	gyro.w = cX * cY * cZ - sX * sY * sZ;
+                  	gyro.x = sX * cY * cZ - cX * sY * sZ;
+                  	gyro.y = cX * sY * cZ + sX * cY * sZ;
+                  	gyro.z = cX * cY * sZ + sX * sY * cZ;
+                }, true);
+            }
+
+            function degToRad(deg)// Degree-to-Radian conversion
+            {
+            	 return deg * Math.PI / 180;
+            }
+
+            function render() {
+
+              var quaternion = new THREE.Quaternion();
+                mesh.quaternion.setFromAxisAngle( new THREE.Vector3( gyro.x, gyro.y, gyro.z ), gyro.w );
+              //var vector = new THREE.Vector3( 1, 0, 0 );
+              //vector.applyQuaternion( quaternion );
+              //var axis = new THREE.Vector3(0, 0.1, 0);
+              //mesh.quaternion.setFromUnitVectors(axis, vector.clone().normalize());
+
+                renderer.render(scene, camera);
+                requestAnimationFrame(render);
+            }
+
+            render();
+        };
+
+
+        </script>
+    </head>
+    <body></body>
+    </html>
