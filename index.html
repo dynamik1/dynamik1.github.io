@@ -21,10 +21,14 @@
         camera.position.set( 0, 0, 30 );
         camera.lookAt( scene.position );
 
-        var geometry = new THREE.BoxGeometry( 17, 17, 17 );
-        var material = new THREE.MeshPhongMaterial( { color: 0xFF0000 } );
+        var geometry = new THREE.BoxGeometry( 15, 15, 15 );
+        var geometry2 = new THREE.BoxGeometry( 8, 8, 8 );
+        var material = new THREE.MeshPhongMaterial( { color: 0x000000, wireframe: true } );
+        var material2 = new THREE.MeshPhongMaterial( { color: 0xFF0000, } );
         var mesh = new THREE.Mesh( geometry, material );
+        var mesh2 = new THREE.Mesh( geometry2, material2 );
         scene.add( mesh );
+        scene.add( mesh2 );
 
         var light = new THREE.PointLight( 0xFFFFFF );
         light.position.set( 10, 40, 20 );
@@ -45,6 +49,9 @@
             mesh.rotateX(a);
             mesh.rotateY(a/2);
             mesh.rotateZ(a/3);
+            mesh2.rotateX(-a*2);
+            mesh2.rotateY(-3*a);
+            mesh2.rotateZ(a/2);
             renderer.render(scene, camera);
             requestAnimationFrame(render);
         }
@@ -65,7 +72,7 @@
       float: left;
       text-align: right;
       background-color: #fff;
-      padding: 0px 20px 20px 0px;
+      padding: 0px 30px 30px 0px;
         }
     h3 {
       font-size: 2em;
@@ -81,6 +88,12 @@
     .right {
       text-align: right;
     }
+    a, a:visited {
+      color: blue;
+    }
+    a:hover {
+      color: red;
+    }
     </style>
 </head>
 <body>
@@ -93,7 +106,7 @@
 <a href="https://dev.opera.com/articles/w3c-device-orientation-usage/">Practical Application and Usage of the W3C Device Orientation API</a></br>
 <h5>Musings</h5>
 <a href="basicthreejs.html">basicthreejs.html - A spinning cube.</a></br>
-<a href="index-threevr.html">index-threevr.html - Experiment with ThreeVR - stereoscopy is wrong.</a></br>
+<a href="index-threevr.html">index-threevr.html - Experiment with ThreeVR</a></br>
 <a href="working.html">working.html - Code sandpit, work in progress.</a></br>
 </div>
 </div>
