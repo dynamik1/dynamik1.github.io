@@ -53,8 +53,8 @@
             //get gyro orientation info
             if (window.DeviceOrientationEvent) {
                 window.addEventListener("deviceorientation", function () {
-                    var x = degToRad(event.beta) ; // beta value
-                  	var y = degToRad(event.gamma) ; // gamma value
+                    var x = degToRad(event.gamma) ; // beta value
+                  	var y = degToRad(event.beta) ; // gamma value
                   	var z = degToRad(event.alpha) ; // alpha value
                   	//precompute to save on processing time
                   	var cX = Math.cos( x/2 );
