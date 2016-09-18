@@ -42,12 +42,14 @@
         renderer.render( scene, camera );
 
         var clock = new THREE.Clock;
+        var bb = 0;
 
         function render() {
             //mesh.rotation.y -= clock.getDelta();
             a = clock.getDelta();
+            bb = bb + 0.01;
             mesh.rotateX(a);
-            mesh.rotateY(a/2);
+            mesh.rotateY(a*Math.cos(bb)*2);
             mesh.rotateZ(a/3);
             mesh2.rotateX(-a*2);
             mesh2.rotateY(-3*a);
