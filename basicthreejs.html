@@ -1,0 +1,59 @@
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Getting Started with Three.js</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/threejs/r76/three.min.js"></script>
+        <script>
+        window.onload = function() {
+
+            var renderer = new THREE.WebGLRenderer();
+            renderer.setSize( 800, 600 );
+            document.body.appendChild( renderer.domElement );
+
+            var scene = new THREE.Scene();
+
+            var camera = new THREE.PerspectiveCamera(
+                35,             // Field of view
+                800 / 600,      // Aspect ratio
+                0.1,            // Near plane
+                10000           // Far plane
+            );
+            camera.position.set( 0, 0, 30 );
+            camera.lookAt( scene.position );
+
+            var geometry = new THREE.BoxGeometry( 5, 5, 5 );
+            var material = new THREE.MeshPhongMaterial( { color: 0xFF0000 } );
+            var mesh = new THREE.Mesh( geometry, material );
+            scene.add( mesh );
+
+            var light = new THREE.PointLight( 0xFFFFFF );
+            light.position.set( 10, 40, 20 );
+            scene.add( light );
+
+            var light = new THREE.PointLight( 0x888800 );
+            light.position.set( -10, -40, 20 );
+            scene.add( light );
+
+            renderer.setClearColor( 0xdddddd, 1);
+            renderer.render( scene, camera );
+
+            var clock = new THREE.Clock;
+
+            function render() {
+                //mesh.rotation.y -= clock.getDelta();
+                a = clock.getDelta();
+                mesh.rotateX(a);
+                mesh.rotateY(a/2);
+                mesh.rotateZ(a/3);
+                renderer.render(scene, camera);
+                requestAnimationFrame(render);
+            }
+
+            render();
+        };
+
+
+        </script>
+    </head>
+    <body></body>
+    </html>

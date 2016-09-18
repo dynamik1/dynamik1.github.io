@@ -1,0 +1,435 @@
+<script>
+var gyro=quatFromAxisAngle(0,0,0,1);//starting state, no rotation (note that in the previous tutorial I was using 0,0,0,0 for the arguments here. I changed the 'w' to 1 show the similarity between axis angles and quaternions, however it doesn't change the output at all. This still represents no rotation as there is no x,y,or z value for that 1 to rotate. Fascinatingly enough, you can also use (1,0,0,0) as the arguments to represent no rotation and it's justified by simialr reasoning.
+
+//get gyro orientation info
+if (window.DeviceOrientationEvent) {
+    window.addEventListener("deviceorientation", function () {//includes gyro js event
+        processGyro(event.alpha, event.beta, event.gamma); //extracted gyro info and process
+    }, true);
+}
+
+function processGyro(alpha,beta,gamma)//updates global quaternion var "gryo" with incoming gyro event data
+{
+	document.getElementById("alpha").innerHTML=alpha.toFixed(5); //show raw info on screen as text
+	document.getElementById("beta").innerHTML=beta.toFixed(5);
+	document.getElementById("gamma").innerHTML =gamma.toFixed(5);
+	gyro=computeQuaternionFromEulers(alpha,beta,gamma); // actually compute gyro info into quaternion
+	document.getElementById("x").innerHTML=gyro.x.toFixed(5);//display raw info on screen as text
+	document.getElementById("y").innerHTML=gyro.y.toFixed(5);
+	document.getElementById("z").innerHTML=gyro.z.toFixed(5);
+	document.getElementById("w").innerHTML=gyro.w.toFixed(5);
+}
+
+function computeQuaternionFromEulers(alpha,beta,gamma)//Alpha around Z axis, beta around X axis and gamma around Y axis intrinsic local space in that order - like nested gimbals(each axis moves depending on how the other moves so processing order is important)
+{
+	var x = degToRad(beta) ; // beta value
+	var y = degToRad(gamma) ; // gamma value
+	var z = degToRad(alpha) ; // alpha value
+	//precompute to save on processing time
+	var cX = Math.cos( x/2 );
+	var cY = Math.cos( y/2 );
+	var cZ = Math.cos( z/2 );
+	var sX = Math.sin( x/2 );
+	var sY = Math.sin( y/2 );
+	var sZ = Math.sin( z/2 );
+	var w = cX * cY * cZ - sX * sY * sZ;
+	var x = sX * cY * cZ - cX * sY * sZ;
+	var y = cX * sY * cZ + sX * cY * sZ;
+	var z = cX * cY * sZ + sX * sY * cZ;
+	return makeQuat(x,y,z,w);	 //returns simple object
+}
+
+function makeQuat(x,y,z,w)//simple utility to make quaternion object super easy to deal with
+{
+	return  {"x":x,"y":y,"z":z,"w":w};
+}
+
+function quaternionMultiply(quaternionArray)// multiplies 2 or more quaternions together (remember order is important. Quaternion multiplication is non-comutitive. Additionally, although the code processes from first to last the way to think about the rotations is last to first)
+{
+	//var qSoFar = quaternionArray[quaternionArray.length-1];//javascript passes objects by reference so this is troublesome
+	var temp = quaternionArray[0];
+	var qSoFar ={x:temp.x,y:temp.y,z:temp.z,w:temp.w}; //must make copy to not alter original object
+	for(var i=1 ;i < quaternionArray.length ;i ++)
+	{
+		var temp2=quaternionArray[i];
+		var next={x:temp2.x,y:temp2.y,z:temp2.z,w:temp2.w};
+		//ww,x,y,z
+		var w = qSoFar.w * next.w - qSoFar.x * next.x - qSoFar.y * next.y - qSoFar.z * next.z;
+		var x = qSoFar.x * next.w + qSoFar.w * next.x + qSoFar.y * next.z - qSoFar.z * next.y;
+		var y = qSoFar.y * next.w + qSoFar.w * next.y + qSoFar.z * next.x - qSoFar.x * next.z;
+		var z = qSoFar.z * next.w + qSoFar.w * next.z + qSoFar.x * next.y - qSoFar.y * next.x;
+		qSoFar.x=x;
+		qSoFar.y=y;
+		qSoFar.z=z;
+		qSoFar.w=w;
+	}
+	return qSoFar;
+}
+
+function inverseQuaternion(q)
+{
+	return makeQuat(q.x,q.y,q.z,-q.w);
+}
+
+function degToRad(deg)// Degree-to-Radian conversion
+{
+	 return deg * Math.PI / 180;
+}
+
+function renderObj(obj,q)
+{
+	var stride      = 6 * Float32Array.BYTES_PER_ELEMENT;
+	var colorOffset = 3 * Float32Array.BYTES_PER_ELEMENT;
+	//gl.uniform4fv(quatLoc, false, [q.x,q.y,q.z,q.w]);
+	//set up the buffer
+	gl.bindBuffer(gl.ARRAY_BUFFER, obj.buffer);//tell gl which buffer to use
+	//tell the shader how to extract data out of the buffer args: loc elements per dataset, type, ?, stride, offeset start
+	if(obj.buffer.hasColorInfo)
+	{
+	  gl.enableVertexAttribArray(vertexPointer);
+	  gl.vertexAttribPointer(vertexPointer, 3, gl.FLOAT, false, stride, 0);
+	  gl.enableVertexAttribArray(colorPointer);
+	  gl.vertexAttribPointer(colorPointer, 3, gl.FLOAT, false, stride, colorOffset);
+	  gl.uniform1i(colorFlagLoc, 1);
+	}else{
+	  gl.enableVertexAttribArray(vertexPointer);
+	  gl.vertexAttribPointer(vertexPointer, 3, gl.FLOAT, false, 0, 0);
+	  gl.uniform1i(colorFlagLoc, 0);
+	}
+	//gl.uniform3fv(colorPointer, obj.color);
+	gl.uniform4fv(quatLoc, [q.x,q.y,q.z,q.w]);
+	gl.drawArrays(gl.TRIANGLE_STRIP, 0, obj.buffer.totalItemsInBuffer);//args: mode,first,count
+	//gl.drawElements(gl.TRIANGLES, ????indices.length, gl.UNSIGNED_SHORT, 0);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+////////////process user input (either touch or mouse events to simulate touch)////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+var userQuat=quatFromAxisAngle(0,0,0,1);//a quaternion to represent the users finger swipe movement - default is no rotation
+var prevTouchX = -1; // -1 is flag for no previous touch info
+var prevTouchY = -1;
+
+//touch events on mobile
+document.addEventListener("touchStart", touchStartFunc, true);//? oddness: touchStart event has capital S but touchmove and touchend don't ?
+document.addEventListener("touchmove", touchmoveFunc, true);
+document.addEventListener("touchend", touchEndFunc, true);
+
+function touchStartFunc(e)//record where x,y start
+{
+	prevTouchY=e.touches[0].clientY;
+	prevTouchX=e.touches[0].clientX;
+}
+
+function touchmoveFunc(e)
+{
+	if( navigator.userAgent.match(/Android/i) ) //stupid android bug cancels touch move if it thinks there's a swipe happening
+	{
+	  e.preventDefault();
+	}
+	userXYmove(e.touches[0].clientX,e.touches[0].clientY);
+}
+
+function touchEndFunc(e)//reset to default
+{
+  prevTouchX = -1;
+  prevTouchY = -1;
+}
+
+//add minimal mouse support to emulate touch events (extremely useful for testing on a computer)
+document.addEventListener("mousedown", mouseDownFunc, true);
+document.addEventListener("mousemove", mouseMoveFunc, true);
+document.addEventListener("mouseup", mouseUpFunc, true);
+
+function mouseDownFunc(e)//record where x,y start
+{
+  prevTouchX = e.clientX;
+  prevTouchY = e.clientY;
+}
+
+function mouseMoveFunc(e)
+{
+	if (prevTouchX!= -1)
+		userXYmove(e.clientX,e.clientY);
+}
+
+function mouseUpFunc(e)
+{
+  prevTouchX = -1;
+  prevTouchY = -1;
+}
+
+////////////actually do something with incoming touch x,y values
+
+function userXYmove(x,y)
+{
+	document.getElementById("userX").innerHTML=x;//show raw info on screen as text
+	document.getElementById("userY").innerHTML=y;
+	if(prevTouchX != -1 ) //need valid prevTouch info to calculate swipe (otherwise swipe just started and it's impossibile to calculate movement yet)
+	{
+	  var xMovement=x-prevTouchX;
+	  var yMovement=y-prevTouchY;
+	  //the following is jumpy, replaced with better code below
+	  //var xMovementQuat=quatFromAxisAngle(1,0,0,y/200);//movement on y rotates x and vice versa
+	  //var yMovementQuat=quatFromAxisAngle(0,1,0,x/200);//200 is there to scale the movement way down to an intuitive amount
+	  //userQuot=quaternionMultiply([yMovementQuat,xMovementQuat]);//use reverse order
+	 //much better (see rant in tutorial as to why this works better)
+	 var xMovementQuat=quatFromAxisAngle(1,0,0,yMovement/200);//movement on y rotates x and vice versa
+	 var yMovementQuat=quatFromAxisAngle(0,1,0,xMovement/200);// '200' is there to scale the movement way down to an intuitive amount
+	  userQuat=quaternionMultiply([gyro,yMovementQuat,xMovementQuat,inverseQuaternion(gyro),userQuat]);//use reverse order
+	}
+	prevTouchY=y;
+	prevTouchX=x;
+}
+
+function quatFromAxisAngle(x,y,z,angle)
+{
+	//axis angles and quaternions are very similar however the quots have imaginary numbers i,j,k
+	//embedded along with using unit values so the result always equals 1. However, try uncommenting out the next
+	//line and see what happens when you just use axisangles instead of quots. Everything almost works just fine
+	//until you try and rotate the cube with your finger or mouse
+	//return makeQuat(x,y,z,angle); //returns an axis-angle pretending to be a quaternion
+	var q={};
+    var half_angle = angle/2;
+    q.x = x * Math.sin(half_angle);
+    q.y = y * Math.sin(half_angle);
+    q.z = z * Math.sin(half_angle);
+    q.w = Math.cos(half_angle);
+	return q;
+}
+
+////////////////////////////////////////////////
+//////// NEW STUFF /////////////////////////////
+////////////////////////////////////////////////
+
+function initBufferFromVertexArray(vertexArray,cubeFaceColorArray) {
+	//take the two arrays and interleave them into one (faster for the gpu as binding buffers is relatively slow)
+	var newCombinedArray = [];
+	var i=0,j=0;
+	while(i < vertexArray.length )
+	{
+		newCombinedArray.push(vertexArray[i++]);//x
+		newCombinedArray.push(vertexArray[i++]);//y
+		newCombinedArray.push(vertexArray[i++]);//z
+		if(cubeFaceColorArray.length !=0)
+		{
+		  newCombinedArray.push(cubeFaceColorArray[j++%cubeFaceColorArray.length]);//r
+		  newCombinedArray.push(cubeFaceColorArray[j++%cubeFaceColorArray.length]);//g
+		  newCombinedArray.push(cubeFaceColorArray[j++%cubeFaceColorArray.length]);//b
+		}
+	}
+	//buffers are little bits of storage on the graphics cards. In this case for an array of vec3 verticies
+	newBuffer = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, newBuffer);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(newCombinedArray), gl.STATIC_DRAW);
+	//newBuffer.elementsPerDataset = 3;// number of array parts that make up a verticiie (x,y,z)---always 3 //js add on property (not part of gl.createBuffer() ) used for easy storage convenience
+	newBuffer.totalItemsInBuffer = (vertexArray.length/3); // total number of vertices
+	//newBuffer.totalItemsInBuffer = newCombinedArray.length;
+	if(cubeFaceColorArray.length !=0)
+		newBuffer.hasColorInfo=true;
+	else
+		newBuffer.hasColorInfo=false;
+	return newBuffer;
+}
+
+function getShader(gl, id) {
+	var shaderScript = document.getElementById(id);
+	if (!shaderScript) {
+		return null;
+	}
+	var str = "";
+	var k = shaderScript.firstChild;
+	while (k) {
+		if (k.nodeType == 3) {
+			str += k.textContent;
+		}
+		k = k.nextSibling;
+	}
+	var shader;
+	if (shaderScript.type == "x-shader/x-fragment") {
+		shader = gl.createShader(gl.FRAGMENT_SHADER);
+	} else if (shaderScript.type == "x-shader/x-vertex") {
+		shader = gl.createShader(gl.VERTEX_SHADER);
+	} else {
+		return null;
+	}
+	gl.shaderSource(shader, str);
+	gl.compileShader(shader);
+	if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+		alert(gl.getShaderInfoLog(shader));
+		return null;
+	}
+	return shader;
+}
+
+function makeRect(width,height,depth)//returns a 3D box like object centered around the origin. There are more than 8 points for this cube as it is being made by chaining together a strip of triangles so points are redundant at least 3x. Confusing for now (sorry) but this odd structure comes in handy later for transitioning into webgl
+{ //coords are -1 to 1 cartesian coordinate style - 0,0 is the middle -1,-1 lower left
+	var newObj={};
+	var hw=width/2;
+	var hh=height/2;
+	var hd=depth/2;
+	newObj.vertices=[  -hw,hh,hd, 	hw,hh,hd, 	hw,-hh,hd,	//first triangle
+					  -hw,hh,hd, 	-hw,-hh,hd, 	hw,-hh,hd,	//2 triangles make front side
+					  -hw,hh,-hd, 	-hw,hh,hd, 	-hw,-hh,-hd, //left side
+					  -hw,hh,hd,		-hw,-hh,hd, 	hw,-hh,-hd,
+					  hw,hh,-hd, 	hw,hh,hd, 	hw,-hh,-hd, 	//right side
+					  hw,hh,hd, 		hw,-hh,hd, 	hw,-hh,-hd,
+					  -hw,hh,-hd, 	hw,hh,-hd, 	hw,-hh,-hd,	//back
+					  -hw,hh,-hd, 	-hw,-hh,-hd, hw,-hh,-hd,
+					  -hw,hh,-hd, 	hw,hh,-hd, 	hw,hh,hd,	//top
+					  -hw,hh,-hd, 	-hw,hh,hd, 	hw,hh,hd,
+					  -hw,-hh,-hd, 	hw,-hh,-hd, 	hw,-hh,hd, 	//bottom
+					  -hw,-hh,-hd, 	-hw,-hh,hd, 	hw,-hh,hd
+	];
+	return newObj;
+}
+
+//render loop - called on every frame to create user interfacable animation
+var cumulativeElapsed=0;
+function renderLoop()
+{
+	requestAnimationFrame(renderLoop);//perpetuate the loop (when page is active) //better than set interval as it pauses when browser isn't active
+	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); //clear canvas
+
+	var timeNow = new Date().getTime();
+	var elapsed=0;
+	if (lastTime != 0) {
+		elapsed = timeNow - lastTime;
+		cumulativeElapsed+=elapsed;
+	}else
+	 cumulativeElapsed=0;
+	 lastTime = timeNow;
+
+	gl.uniform1f(timeLoc,cumulativeElapsed/1000);
+
+  	if(prevTouchX != -1)
+  		gl.uniform2fv(mouseLoc, [prevTouchX,prevTouchY]);
+
+  //create some fake rotation data (gyro) in case web page isn't being accessed from a mobile or gyro enabled device
+  if(!( window.DeviceOrientationEvent && 'ontouchstart' in window))//senses if gyro is present
+  {
+	this.fakeAlpha = (this.fakeAlpha || 0)+ .0;//z axis - use val of 0 in last spot to turn off rotation on this axis
+	this.fakeBeta = (this.fakeBeta || 0)+ elapsed* .07;//x axis
+	this.fakeGamma = (this.fakeGamma || 0)+ elapsed* .05;//y axis
+	processGyro(this.fakeAlpha,this.fakeBeta,this.fakeGamma); //fake gyro event simulates constant smooth rotation
+  }
+
+  renderObj(cube,quaternionMultiply([inverseQuaternion(gyro),userQuat]));
+  renderObj(xAxis,inverseQuaternion(gyro));
+  renderObj(yAxis,inverseQuaternion(gyro));
+  renderObj(zAxis,inverseQuaternion(gyro));//oddly enough, this renders behind the other three
+  renderObj(background,makeQuat(0,0,0,1));
+
+  if(cumulativeElapsed>5000){
+  	document.getElementById("launchNote").innerHTML="";//clear out the startup note
+  }
+
+}
+
+////////////////////////////////////////////////
+//////// INIT STUFF ////////////////////////////
+////////////////////////////////////////////////
+
+var gl;
+var shaderProgram;
+var lastTime = 0;
+
+var canvas = document.getElementById("myCanvas");
+canvas.width  = canvas.clientWidth;//this is needed because although the style sheet stretches canvas out, the canvas object itself...
+canvas.height = canvas.clientHeight;//...still thinks it's smaller and will render everything smaller but stretched resuling in a fuzzy out of focus look. Ideally there should be some onresize code that resets all this so it doesn't look weird if the user changes it
+//init gl
+try {
+	gl = canvas.getContext("webgl");//used to be "experimental-webgl"
+	gl.viewportWidth = canvas.clientWidth;
+	gl.viewportHeight = canvas.clientHeight;
+	//console.log(canvas.clientWidth);
+	//console.log(gl.viewportWidth);//just checking, they are the same
+} catch (e) {
+	alert('Exception catched in getContext: '+e.toString());//return;
+}
+if (!gl) {
+	alert("Could not initialize WebGL, sorry :-(");
+}
+
+//init shaders
+var fragmentShader = getShader(gl, "shader-fs"); //get fragment shader
+var vertexShader = getShader(gl, "shader-vs"); //get vertex shader
+shaderProgram = gl.createProgram();
+gl.attachShader(shaderProgram, vertexShader);
+gl.attachShader(shaderProgram, fragmentShader);
+gl.linkProgram(shaderProgram);
+if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+	//alert("Could not initialize shaders");
+	alert("Error during program linking:" + gl.getProgramInfoLog(shaderProgram));
+}
+
+// Validates and uses program (*******not necesarry********)
+gl.validateProgram(shaderProgram);
+if (!gl.getProgramParameter(shaderProgram, gl.VALIDATE_STATUS))
+{
+	alert("Error during shader program validation:\n" + gl.getProgramInfoLog(shaderProgram));
+}
+
+gl.useProgram(shaderProgram);
+var vertexPointer = gl.getAttribLocation(shaderProgram, "aVertexPosition"); //get pointer to input variable of shader, in this case named 'aVertexPosition'
+if(vertexPointer == -1)
+{
+	alert('Error during shader attribute address retrieval');
+}
+
+var colorPointer=gl.getAttribLocation(shaderProgram, "a_color");
+
+var arLoc = gl.getUniformLocation(shaderProgram, "aspectRatio");
+gl.uniform1f(arLoc,canvas.clientWidth/canvas.clientHeight);
+
+var quatLoc = gl.getUniformLocation(shaderProgram, "quat");
+
+var resolution = gl.getUniformLocation(shaderProgram, "resolution");
+gl.uniform2fv(resolution, [canvas.clientWidth,canvas.clientHeight]);
+
+var timeLoc = gl.getUniformLocation(shaderProgram, "time");
+var mouseLoc = gl.getUniformLocation(shaderProgram, "mouse");
+var colorFlagLoc=gl.getUniformLocation(shaderProgram, "colorFlag");
+
+var cube=makeRect(0.9,0.9,0.9);//width height depth
+var colors=[1.0,0.0,0.0,
+			0.0,1.0,0.0,
+			0.0,0.0,1.0];//RGB vals for each points.
+cube.buffer=initBufferFromVertexArray(cube.vertices,colors);
+
+var xAxis=makeRect(2.0,0.05,0.05);
+colors=[0.0,1.0,0.0];//all green
+xAxis.buffer=initBufferFromVertexArray(xAxis.vertices,colors);
+
+var yAxis=makeRect(0.05,2.0,0.05);
+colors=[1.0,0.0,0.0];//all red
+yAxis.buffer=initBufferFromVertexArray(yAxis.vertices,colors);
+
+var zAxis=makeRect(0.05,0.05,2.0);
+colors=[0.0,0.0,1.0];// all blue
+zAxis.buffer=initBufferFromVertexArray(zAxis.vertices,colors);
+
+var background={};
+background.vertices=[	-1.0,-1.0, -.999,
+						-1.0,1.0,  -.999,
+						1.0,-1.0,  -.999,
+
+						-1.0,1.0,  -.999,
+						1.0,-1.0,  -.999,
+						1.0, 1.0, -.999
+						];
+colors=[];
+background.buffer=initBufferFromVertexArray(background.vertices,colors);
+
+gl.clearColor(1.0, 1.0, 1.0, 1.0); //white (not sure what trailing 1 is)
+gl.enable(gl.DEPTH_TEST);//stuff in front renders in front
+
+//show some intro messages
+if(!( window.DeviceOrientationEvent && 'ontouchstart' in window))
+  document.getElementById("launchNote").innerHTML="This is meant to demonstrate the gyroscope function on your phone. Try launching it there and see what you're missing. For now, drag with your mouse to simulate interaction.";
+else
+  document.getElementById("launchNote").innerHTML="Move the phone around. Drag your finger. Do both at the same time. Enjoy!";
+
+renderLoop();//get the perpetual ball rolling...
+
+</script>
