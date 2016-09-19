@@ -1,98 +1,104 @@
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Getting Started with Three.js</title>
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>three.js webgl - controls - deviceorientation</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="user-scalable=no, initial-scale=1">
+		<style>
+			body {
+				margin: 0px;
+				background-color: #000000;
+				overflow: hidden;
+			}
+
+			#info {
+				position: absolute;
+				top: 0px; width: 100%;
+				color: #ffffff;
+				padding: 5px;
+				font-family:Monospace;
+				font-size:13px;
+				font-weight: bold;
+				text-align:center;
+			}
+
+			a {
+				color: #ff8800;
+			}
+		</style>
+	</head>
+	<body>
+
+		<div id="container"></div>
+
+		<div id="info">
+
+		</div>
+
         <script src="https://ajax.googleapis.com/ajax/libs/threejs/r76/three.min.js"></script>
-        <script>
-        window.onload = function() {
+		<script src="DeviceOrientationControls.js"></script>
 
-            var renderer = new THREE.WebGLRenderer();
-            renderer.setSize( 800, 600 );
-            document.body.appendChild( renderer.domElement );
+		<script>
+			(function() {
+				  "use strict";
 
-            var scene = new THREE.Scene();
+				  window.addEventListener('load', function() {
 
-            var camera = new THREE.PerspectiveCamera(
-                35,             // Field of view
-                800 / 600,      // Aspect ratio
-                0.1,            // Near plane
-                10000           // Far plane
-            );
-            camera.position.set( 0, 0, 30 );
-            camera.lookAt( scene.position );
+						var container, camera, scene, renderer, controls, geometry, mesh;
 
-            var geometry = new THREE.BoxGeometry( 5, 5, 5 );
-            var material = new THREE.MeshPhongMaterial( { color: 0xFF0000 } );
-            var mesh = new THREE.Mesh( geometry, material );
-            scene.add( mesh );
+						var animate = function(){
 
-            var light = new THREE.PointLight( 0xFFFFFF );
-            light.position.set( 10, 40, 20 );
-            scene.add( light );
+							window.requestAnimationFrame( animate );
 
-            var light = new THREE.PointLight( 0x888800 );
-            light.position.set( -10, -40, 20 );
-            scene.add( light );
+							controls.update();
+							renderer.render(scene, camera);
 
-            renderer.setClearColor( 0xdddddd, 1);
-            renderer.render( scene, camera );
+						};
 
-            var gyro = { "x":0, "y":0, "z":0, "w":1 }
+						container = document.getElementById( 'container' );
 
-            function quatFromAxisAngle(x,y,z,angle)
-            {
-            	var q={};
-                var half_angle = angle/2;
-                q.x = x * Math.sin(half_angle);
-                q.y = y * Math.sin(half_angle);
-                q.z = z * Math.sin(half_angle);
-                q.w = Math.cos(half_angle);
-            	return q;
-            }
+						camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1100);
 
-            //get gyro orientation info
-            if (window.DeviceOrientationEvent) {
-                window.addEventListener("deviceorientation", function () {
-                    var x = degToRad(event.gamma) ; // beta value
-                  	var y = degToRad(event.beta) ; // gamma value
-                  	var z = degToRad(event.alpha) ; // alpha value
-                  	//precompute to save on processing time
-                  	var cX = Math.cos( x/2 );
-                  	var cY = Math.cos( y/2 );
-                  	var cZ = Math.cos( z/2 );
-                  	var sX = Math.sin( x/2 );
-                  	var sY = Math.sin( y/2 );
-                  	var sZ = Math.sin( z/2 );
-                  	gyro.w = cX * cY * cZ - sX * sY * sZ;
-                  	gyro.x = sX * cY * cZ - cX * sY * sZ;
-                  	gyro.y = cX * sY * cZ + sX * cY * sZ;
-                  	gyro.z = cX * cY * sZ + sX * sY * cZ;
-                }, true);
-            }
+						controls = new THREE.DeviceOrientationControls( camera );
 
-            function degToRad(deg)// Degree-to-Radian conversion
-            {
-            	 return deg * Math.PI / 180;
-            }
+						scene = new THREE.Scene();
 
-            function render() {
+						var geometry = new THREE.SphereGeometry( 500, 16, 8 );
+						geometry.scale( - 1, 1, 1 );
 
-              var quaternion = new THREE.Quaternion();
-                mesh.quaternion.setFromAxisAngle( new THREE.Vector3( gyro.x, gyro.y, gyro.z ), gyro.w );
-              //var vector = new THREE.Vector3( 1, 0, 0 );
-              //vector.applyQuaternion( quaternion );
-              //var axis = new THREE.Vector3(0, 0.1, 0);
-              //mesh.quaternion.setFromUnitVectors(axis, vector.clone().normalize());
+						var material = new THREE.MeshBasicMaterial( {
+							map: new THREE.TextureLoader().load( 'textures/2294472375_24a3b8ef46_o.jpg' )
+						} );
 
-                renderer.render(scene, camera);
-                requestAnimationFrame(render);
-            }
+						var mesh = new THREE.Mesh( geometry, material );
+						scene.add( mesh );
 
-            render();
-        };
+						var geometry = new THREE.BoxGeometry( 100, 100, 100, 4, 4, 4 );
+						var material = new THREE.MeshBasicMaterial( { color: 0xff00ff, side: THREE.BackSide, wireframe: true } );
+						var mesh = new THREE.Mesh( geometry, material );
+						scene.add( mesh );
 
+						renderer = new THREE.WebGLRenderer();
+						renderer.setPixelRatio( window.devicePixelRatio );
+						renderer.setSize(window.innerWidth, window.innerHeight);
+						renderer.domElement.style.position = 'absolute';
+						renderer.domElement.style.top = 0;
+						container.appendChild(renderer.domElement);
 
-        </script>
-    </head>
-    <body></body>
-    </html>
+						window.addEventListener('resize', function() {
+
+							camera.aspect = window.innerWidth / window.innerHeight;
+							camera.updateProjectionMatrix();
+							renderer.setSize( window.innerWidth, window.innerHeight );
+
+						}, false);
+
+						animate();
+
+				  }, false);
+
+			})();
+		</script>
+
+	</body>
+</html>
