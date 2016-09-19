@@ -32,7 +32,8 @@
 		<div id="container"></div>
 
 		<div id="info">
-
+			<a href="http://threejs.org" target="_blank">three.js</a> - equirectangular panorama demo with DeviceOrientation controls.
+			photo by <a href="http://www.flickr.com/photos/jonragnarsson/2294472375/" target="_blank">Jón Ragnarsson</a>.
 		</div>
 
         <script src="https://ajax.googleapis.com/ajax/libs/threejs/r76/three.min.js"></script>
@@ -52,22 +53,15 @@
 
 						container = document.getElementById( 'container' );
 						camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1100);
-						controls = new THREE.DeviceOrientationControls( camera );
+
 						scene = new THREE.Scene();
-
-						var geometry = new THREE.SphereGeometry( 500, 16, 8 );
-						geometry.scale( - 1, 1, 1 );
-						var material = new THREE.MeshBasicMaterial( {
-							map: new THREE.TextureLoader().load( 'textures/2294472375_24a3b8ef46_o.jpg' )
-						} );
-
-						var mesh = new THREE.Mesh( geometry, material );
-						scene.add( mesh );
 
 						var geometry = new THREE.BoxGeometry( 100, 100, 100, 4, 4, 4 );
 						var material = new THREE.MeshBasicMaterial( { color: 0xff00ff, side: THREE.BackSide, wireframe: true } );
 						var mesh = new THREE.Mesh( geometry, material );
 						scene.add( mesh );
+
+						controls = new THREE.DeviceOrientationControls( mesh );
 
 						renderer = new THREE.WebGLRenderer();
 						renderer.setPixelRatio( window.devicePixelRatio );
@@ -77,13 +71,17 @@
 						container.appendChild(renderer.domElement);
 
 						window.addEventListener('resize', function() {
+
 							camera.aspect = window.innerWidth / window.innerHeight;
 							camera.updateProjectionMatrix();
 							renderer.setSize( window.innerWidth, window.innerHeight );
+
 						}, false);
 
 						animate();
+
 				  }, false);
+
 			})();
 		</script>
 
