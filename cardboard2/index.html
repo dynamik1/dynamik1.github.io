@@ -82,6 +82,7 @@
 
       lightb = new THREE.SpotLight( 0xFFFF00 );
       lightb.position.set( 10, 40, 20 );
+      lightb.castShadow = true;
       scene.add( lightb );
 
       var texture = THREE.ImageUtils.loadTexture(
@@ -148,6 +149,7 @@
       lightb.rotateX(a);
       lightb.rotateY(a/2);
       lightb.rotateZ(a/3);
+      lightb.target.updateMatrixWorld();
       requestAnimationFrame(animate);
 //      renderer.render(scene, camera);
       update(clock.getDelta());
