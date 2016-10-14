@@ -110,6 +110,8 @@
       var geometryb = new THREE.BoxGeometry( 5, 5, 5 );
       var materialb = new THREE.MeshPhongMaterial( { color: 0xFF0000 } );
       meshb = new THREE.Mesh( geometryb, materialb );
+      meshb.castShadow = true;
+      meshb.receiveShadow = false;
       meshb.position.y = 10;
       meshb.position.z = 10;
       scene.add( meshb );
