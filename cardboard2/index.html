@@ -40,6 +40,13 @@
     function init() {
       renderer = new THREE.WebGLRenderer();
       renderer.shadowMapEnabled = true;
+      renderer.shadowCameraNear = 3;
+      renderer.shadowCameraFov = 50;
+
+      renderer.shadowMapBias = 0.0039;
+      renderer.shadowMapDarkness = 0.5;
+      renderer.shadowMapWidth = 1024;
+      renderer.shadowMapHeight = 1024;
       element = renderer.domElement;
       container = document.getElementById('example');
       container.appendChild(element);
@@ -80,7 +87,7 @@
 
       var light = new THREE.HemisphereLight(0x777777, 0x000000, 0.6);
       scene.add(light);
-      
+
 
       var texture = THREE.ImageUtils.loadTexture(
         'textures/patterns/checker.png'
@@ -116,16 +123,15 @@
       scene.add( meshb );
 
       lightb = new THREE.SpotLight( 0xFFFF00 );
-      lightb.position.set( 20, 20, 40 );
+      lightb.position.set( 30, 30, -30 );
       lightb.castShadow = true;
-lightb.shadowMapWidth = 1024;
-lightb.shadowMapHeight = 1024;
-lightb.shadowCameraNear = 300;
-lightb.shadowCameraFar = 600;
-lightb.shadowCameraFov = 45;
-lightb.shadowDarkness = 0.5;
-  lightb.target = meshb;
-
+      // lightb.shadowMapWidth = 1024;
+      // lightb.shadowMapHeight = 1024;
+      // lightb.shadowCameraNear = 300;
+      // lightb.shadowCameraFar = 600;
+      // lightb.shadowCameraFov = 45;
+      // lightb.shadowDarkness = 0.8;
+      lightb.target = meshb;
       lightb.shadowCameraVisible = true;
       scene.add( lightb );
 
