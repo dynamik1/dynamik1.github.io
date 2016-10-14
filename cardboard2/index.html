@@ -27,7 +27,7 @@
   <script src="js/third-party/threejs/OrbitControls.js"></script>
 
   <script>
-    var camera, scene, renderer;
+    var camera, scene, renderer, meshb;
     var effect, controls;
     var element, container;
 
@@ -103,7 +103,7 @@
 
       var geometryb = new THREE.BoxGeometry( 5, 5, 5 );
       var materialb = new THREE.MeshPhongMaterial( { color: 0xFF0000 } );
-      var meshb = new THREE.Mesh( geometryb, materialb );
+      meshb = new THREE.Mesh( geometryb, materialb );
       meshb.position.y = -10;
       meshb.position.z = 10;
       scene.add( meshb );
