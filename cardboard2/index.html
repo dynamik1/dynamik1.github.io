@@ -39,6 +39,7 @@
 
     function init() {
       renderer = new THREE.WebGLRenderer();
+      renderer.shadowMapEnabled = true;
       element = renderer.domElement;
       container = document.getElementById('example');
       container.appendChild(element);
