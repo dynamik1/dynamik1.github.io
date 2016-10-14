@@ -79,6 +79,10 @@
       var light = new THREE.HemisphereLight(0x777777, 0x000000, 0.6);
       scene.add(light);
 
+      var lightb = new THREE.PointLight( 0xFFFFFF );
+      lightb.position.set( 10, 40, 20 );
+      scene.add( lightb );
+
       var texture = THREE.ImageUtils.loadTexture(
         'textures/patterns/checker.png'
       );
@@ -104,7 +108,7 @@
       var geometryb = new THREE.BoxGeometry( 5, 5, 5 );
       var materialb = new THREE.MeshPhongMaterial( { color: 0xFF0000 } );
       meshb = new THREE.Mesh( geometryb, materialb );
-      meshb.position.y = 15;
+      meshb.position.y = 10;
       meshb.position.z = 10;
       scene.add( meshb );
 
