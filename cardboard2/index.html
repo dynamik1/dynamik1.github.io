@@ -123,7 +123,7 @@
       scene.add( meshb );
 
       lightb = new THREE.SpotLight( 0xFFFF00 );
-      lightb.position.set( 30, 30, -30 );
+      lightb.position.set( 30, 50, -20 );
       lightb.castShadow = true;
       // lightb.shadowMapWidth = 1024;
       // lightb.shadowMapHeight = 1024;
@@ -165,6 +165,9 @@
 
     function animate(t) {
       a = clock.getDelta();
+      meshb.position.x = (Math.sin(clock.elapsedTime)*10)+10;
+      meshb.position.y = (Math.cos(clock.elapsedTime/2)*10)+15;
+      meshb.position.z = (Math.sin(clock.elapsedTime/3)*10)+15;
       meshb.rotateX(a);
       meshb.rotateY(a/2);
       meshb.rotateZ(a/3);
