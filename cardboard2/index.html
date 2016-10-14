@@ -104,7 +104,7 @@
       var geometryb = new THREE.BoxGeometry( 5, 5, 5 );
       var materialb = new THREE.MeshPhongMaterial( { color: 0xFF0000 } );
       meshb = new THREE.Mesh( geometryb, materialb );
-      meshb.position.y = -10;
+      meshb.position.y = 10;
       meshb.position.z = 10;
       scene.add( meshb );
 
@@ -136,10 +136,10 @@
     }
 
     function animate(t) {
-      a = clock.getDelta();
-      meshb.rotateX(a);
-      meshb.rotateY(a/2);
-      meshb.rotateZ(a/3);
+      //a = clock.getDelta();
+      //meshb.rotateX(a);
+      //meshb.rotateY(a/2);
+      //meshb.rotateZ(a/3);
       requestAnimationFrame(animate);
 //      renderer.render(scene, camera);
       update(clock.getDelta());
