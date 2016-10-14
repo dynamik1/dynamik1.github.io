@@ -83,6 +83,7 @@
       lightb = new THREE.SpotLight( 0xFFFF00 );
       lightb.position.set( 0, 40, 0 );
       lightb.castShadow = true;
+      lightb.shadowCameraVisible = true;
       scene.add( lightb );
 
       var texture = THREE.ImageUtils.loadTexture(
