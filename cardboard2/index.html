@@ -136,11 +136,11 @@
     }
 
     function animate(t) {
-      requestAnimationFrame(animate);
       a = clock.getDelta();
       meshb.rotateX(a);
       meshb.rotateY(a/2);
       meshb.rotateZ(a/3);
+      requestAnimationFrame(animate);
 //      renderer.render(scene, camera);
       update(clock.getDelta());
       render(clock.getDelta());
