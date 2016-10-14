@@ -146,7 +146,7 @@
       meshb.rotateX(a);
       meshb.rotateY(a/2);
       meshb.rotateZ(a/3);
-      lightb.target.position.set((Math.sin(a)*50),0,0)
+      lightb.target.position.set((Math.sin(a*50)*50),0,0)
       lightb.target.updateMatrixWorld();
       requestAnimationFrame(animate);
 //      renderer.render(scene, camera);
