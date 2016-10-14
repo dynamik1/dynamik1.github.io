@@ -122,11 +122,12 @@
       scene.add( meshb );
 
       lightb = new THREE.SpotLight( 0xFFFFFF );
-      lightb.position.set( 60, 100, -20 );
+      lightb.position.set( 60, 100, -30 );
       lightb.castShadow = true;
-      lightb.target = meshb;
       //lightb.shadowCameraVisible = true;
+
       scene.add( lightb );
+
 
 
       window.addEventListener('resize', resize, false);
@@ -164,6 +165,8 @@
       meshb.rotateX(a);
       meshb.rotateY(a/2);
       meshb.rotateZ(a/3);
+            lightb.target = meshb;
+            //lightb.updateWorldMatrix();
       //lightb.target = meshb;
       //lightb.target.updateMatrixWorld();
       requestAnimationFrame(animate);
