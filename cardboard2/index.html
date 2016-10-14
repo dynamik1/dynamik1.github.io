@@ -42,7 +42,6 @@
       renderer.shadowMapEnabled = true;
       renderer.shadowCameraNear = 3;
       renderer.shadowCameraFov = 50;
-
       renderer.shadowMapBias = 0.0039;
       renderer.shadowMapDarkness = 0.5;
       renderer.shadowMapWidth = 1024;
@@ -122,17 +121,11 @@
       meshb.position.z = 10;
       scene.add( meshb );
 
-      lightb = new THREE.SpotLight( 0xFFFF00 );
-      lightb.position.set( 30, 50, -20 );
+      lightb = new THREE.SpotLight( 0xFFFFFF );
+      lightb.position.set( 60, 100, -20 );
       lightb.castShadow = true;
-      // lightb.shadowMapWidth = 1024;
-      // lightb.shadowMapHeight = 1024;
-      // lightb.shadowCameraNear = 300;
-      // lightb.shadowCameraFar = 600;
-      // lightb.shadowCameraFov = 45;
-      // lightb.shadowDarkness = 0.8;
       lightb.target = meshb;
-      lightb.shadowCameraVisible = true;
+      //lightb.shadowCameraVisible = true;
       scene.add( lightb );
 
 
@@ -165,9 +158,9 @@
 
     function animate(t) {
       a = clock.getDelta();
-      meshb.position.x = (Math.sin(clock.elapsedTime)*10)+10;
+      meshb.position.x = (Math.sin(clock.elapsedTime/3)*10);
       meshb.position.y = (Math.cos(clock.elapsedTime/2)*10)+15;
-      meshb.position.z = (Math.sin(clock.elapsedTime/3)*10)+15;
+      meshb.position.z = (Math.sin(clock.elapsedTime)*10)+20;
       meshb.rotateX(a);
       meshb.rotateY(a/2);
       meshb.rotateZ(a/3);
