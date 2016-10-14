@@ -104,7 +104,8 @@
       var geometryb = new THREE.BoxGeometry( 5, 5, 5 );
       var materialb = new THREE.MeshPhongMaterial( { color: 0xFF0000 } );
       var meshb = new THREE.Mesh( geometryb, materialb );
-      meshb.position.z = 100;
+      meshb.position.y = 20;
+      meshb.position.z = 20;
       scene.add( meshb );
 
       window.addEventListener('resize', resize, false);
