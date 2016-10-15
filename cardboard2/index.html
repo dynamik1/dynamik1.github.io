@@ -51,6 +51,7 @@
     animate();
 
     function init() {
+
     // setup renderer with shadows
       renderer = new THREE.WebGLRenderer();
       renderer.shadowMapEnabled = true;
@@ -63,13 +64,16 @@
       element = renderer.domElement;
       container = document.getElementById('example');
       container.appendChild(element);
+
     //stereo effect
       effect = new THREE.StereoEffect(renderer);
       scene = new THREE.Scene();
+
     //camera
       camera = new THREE.PerspectiveCamera(90, 1, 0.001, 700);
       camera.position.set(0, 10, 0);
       scene.add(camera);
+
     //cardboard controls
       controls = new THREE.OrbitControls(camera, element);
       controls.rotateUp(Math.PI / 4);
@@ -91,7 +95,6 @@
         window.removeEventListener('deviceorientation', setOrientationControls, true);
       }
       window.addEventListener('deviceorientation', setOrientationControls, true);
-
 
     // ambient light
       var light = new THREE.HemisphereLight(0x777777, 0x000000, 0.6);
@@ -119,11 +122,23 @@
       mesh.receiveShadow = true;
       scene.add(mesh);
 
-      //red cubes
+      //let there be cubes
       var geometryb = new THREE.BoxGeometry( 3, 3, 3 );
-      var materialb = new THREE.MeshPhongMaterial( { color: 0xFF0000 } );
+
+      var colors = [0xff0000,
+                    0xff8800,
+                    0x88ff00,
+                    0x00ff00,
+                    0x00ff88,
+                    0x00ffff,
+                    0x0088ff,
+                    0x0000ff,
+                    0x8800ff,
+                    0xff00ff,
+                    0xff0088];
 
       for (var i = 0; i < 8; i++) {
+          var materialb = new THREE.MeshPhongMaterial( { color: colors[i] } );
           mesh = new THREE.Mesh( geometryb, materialb );
           mesh.castShadow = true;
           mesh.receiveShadow = false;
@@ -178,6 +193,7 @@
           object.position.x = (Math.sin(clock.elapsedTime+b/3)*10);
           object.position.y = (Math.cos(clock.elapsedTime+b/2)*10)+15;
           object.position.z = (Math.sin(clock.elapsedTime+b)*10)+20;
+        //  object.material.color.setHex(b*b*b*0xf0f);
           object.rotateX(a);
           object.rotateZ(a/3);
           object.rotateY(a/2);
