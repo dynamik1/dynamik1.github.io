@@ -130,6 +130,9 @@
           mesh.position.y = 11+i;
           mesh.position.z = 11+i;
           mesh.name = "cube"+i;
+          mesh.rotateX(i);
+          mesh.rotateZ(i/3);
+          mesh.rotateY(i/2);
           mesh.userData = i;
           scene.add(mesh);
       }
