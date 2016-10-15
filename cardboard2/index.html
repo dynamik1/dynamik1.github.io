@@ -123,7 +123,7 @@
       scene.add(mesh);
 
       //let there be cubes
-      var geometryb = new THREE.BoxGeometry( 4, 4, 4 );
+      var geometryb = new THREE.BoxGeometry( 5, 5, 5 );
 
       var colors = [0xff0000,
                     0xff8800,
@@ -152,7 +152,7 @@
 
     // spotlight for shadow
       lightb = new THREE.SpotLight( 0xFFFFFF );
-      lightb.position.set( 80, 120, -40 );
+      lightb.position.set( 150, 150, -150 );
       lightb.castShadow = true;
       //lightb.shadowCameraVisible = true;
       scene.add( lightb );
@@ -188,9 +188,9 @@
       scene.traverse (function (object) {
         if (object.name.indexOf("cube") >= 0) {
           b = object.userData;
-          object.position.x = (Math.sin(((clock.elapsedTime+(b*1))/1)/3)*50);
-          object.position.y = (Math.cos(((clock.elapsedTime+(b*5))/1)/3)*10)+15;
-          object.position.z = (Math.cos(((clock.elapsedTime+(b*1))/1))*30);
+          object.position.x = (Math.sin(((clock.elapsedTime+(b*1))/1)/3)*80);
+          object.position.y = (Math.cos(((clock.elapsedTime+(b*5))/1)/3)*15)+20;
+          object.position.z = (Math.cos(((clock.elapsedTime+(b*1))/1))*70);
           object.rotateX(a);
           object.rotateZ(a/3);
           object.rotateY(a/2);
