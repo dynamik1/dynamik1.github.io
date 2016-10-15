@@ -120,25 +120,18 @@
       scene.add(mesh);
 
       //red cubes
-      var geometryb = new THREE.BoxGeometry( 5, 5, 5 );
+      var geometryb = new THREE.BoxGeometry( 3, 3, 3 );
       var materialb = new THREE.MeshPhongMaterial( { color: 0xFF0000 } );
 
-      root = new THREE.Mesh( geometryb, materialb );
-      root.castShadow = true;
-      root.receiveShadow = false;
-      root.position.y = 10;
-      root.position.z = 10;
-      scene.add(root);
-
-      parent = root;
-      for (var i = 0; i < 5; i++) {
-        mesh = new THREE.Mesh( geometryb, materialb );
-        mesh.castShadow = true;
-        mesh.receiveShadow = false;
-        mesh.position.y = 11+i;
-        mesh.position.z = 11+i;
-        parent.add(mesh);
-        parent = mesh;
+      for (var i = 0; i < 8; i++) {
+          mesh = new THREE.Mesh( geometryb, materialb );
+          mesh.castShadow = true;
+          mesh.receiveShadow = false;
+          mesh.position.y = 11+i;
+          mesh.position.z = 11+i;
+          mesh.name = "cube"+i;
+          mesh.userData = i;
+          scene.add(mesh);
       }
 
     // spotlight for shadow
@@ -176,15 +169,17 @@
 
     // animate red cube
       a = clock.getDelta();
-//      for (var i = 0; i < 5; i++) {
-        //root.position.x = (Math.sin(clock.elapsedTime/3)*10)+i;
-        //root.position.y = (Math.cos(clock.elapsedTime/2)*10)+15+i;
-      //  root.position.z = (Math.sin(clock.elapsedTime)*10)+20+i;
-      i=0;
-        root.rotateX(a+i);
-        root.rotateZ(a+i/3);
-        root.rotateY(a+i/2);
-//      }
+      scene.traverse (function (object) {
+        if (object.name.indexOf("cube") >= 0) {
+          b = object.userData;
+          object.position.x = (Math.sin(clock.elapsedTime+b/3)*10);
+          object.position.y = (Math.cos(clock.elapsedTime+b/2)*10)+15;
+          object.position.z = (Math.sin(clock.elapsedTime+b)*10)+20;
+          object.rotateX(a);
+          object.rotateZ(a/3);
+          object.rotateY(a/2);
+        }
+      });
 
       requestAnimationFrame(animate);
 
