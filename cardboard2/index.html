@@ -190,9 +190,9 @@
       scene.traverse (function (object) {
         if (object.name.indexOf("cube") >= 0) {
           b = object.userData;
-          object.position.x = (Math.sin((clock.elapsedTime/3)+b)*30);
-          object.position.y = (Math.cos((clock.elapsedTime/3)+b/5)*10)+15;
-          object.position.z = (Math.sin((clock.elapsedTime/3)+b/3)*30)-15;
+          object.position.x = (Math.sin((clock.elapsedTime+(b*3)/4)+b)*30);
+          object.position.y = (Math.cos((clock.elapsedTime+(b*3)/4)+b/5)*10)+15;
+          object.position.z = (Math.sin((clock.elapsedTime+(b*3)/4)+b/3)*30)-15;
         //  object.material.color.setHex(b*b*b*0xf0f);
           object.rotateX(a);
           object.rotateZ(a/3);
