@@ -10,21 +10,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/threejs/r76/three.min.js"></script>
     <script>
     window.onload = function() {
-
         var renderer = new THREE.WebGLRenderer({ alpha: true });
         renderer.setSize( 150, 150 );
         document.getElementById("threecanvas").appendChild( renderer.domElement );
-
         var scene = new THREE.Scene();
-        var camera = new THREE.PerspectiveCamera(
-            60,             // Field of view
-            150 / 150,      // Aspect ratio
-            0.1,            // Near plane
-            10000           // Far plane
-        );
+        var camera = new THREE.PerspectiveCamera( 60, 150 / 150, 0.1, 10000 );
         camera.position.set( 0, 0, 30 );
         camera.lookAt( scene.position );
-
         var geometry = new THREE.BoxGeometry( 15, 15, 15 );
         var geometry2 = new THREE.BoxGeometry( 8, 8, 8 );
         var material = new THREE.MeshPhongMaterial( { color: 0x000000, wireframe: true } );
@@ -33,21 +25,16 @@
         var mesh2 = new THREE.Mesh( geometry2, material2 );
         scene.add( mesh );
         scene.add( mesh2 );
-
         var light = new THREE.PointLight( 0xFFFFFF );
         light.position.set( 10, 40, 20 );
         scene.add( light );
-
         var light = new THREE.PointLight( 0x888800 );
         light.position.set( -10, -40, 20 );
         scene.add( light );
-
         renderer.setClearColor( 0xffffff, 1);
         renderer.render( scene, camera );
-
         var clock = new THREE.Clock;
         var bb = 0;
-
         function render() {
             //mesh.rotation.y -= clock.getDelta();
             a = clock.getDelta();
@@ -61,64 +48,62 @@
             renderer.render(scene, camera);
             requestAnimationFrame(render);
         }
-
         render();
     };
     </script>
     <style>
-    body {
-      font-family: 'Raleway', sans-serif;
-      background-color: #ddd;
-      margin: 0px;
-      padding: 10px 0px 0px 0px;
-    }
-    #wrapper {
-      width: 540px;
-      margin: 0 auto;
-      padding: 0 px;
-    }
-    #main {
-      float: left;
-      text-align: right;
-      background-color: #fff;
-      padding: 0px 30px 30px 0px;
-      margin: 0px;
-        }
-    h3 {
-      font-size: 2em;
-
-    }
-    h5 {
-      font-size: 1em;
-    }
-    h6 {
-      position: relative;
-      top: -2em;
-      margin-bottom: 0px;
-    }
-    #threecanvas {
-      padding: 20px;
-      float: left;
-    }
-    .right {
-      text-align: right;
-    }
-    a, a:visited {
-      color: blue;
-    }
-    a:hover {
-      color: red;
-    }
-    #thumb {
-      width:100%;
-      border: 0px;
-      padding: 0px;
-    }
-    .pop {
-      color:red;
-      font-weight: bold;
-      font-size: 0.7em;
-    }
+      body {
+        font-family: 'Raleway', sans-serif;
+        background-color: #ddd;
+        margin: 0px;
+        padding: 10px 0px 0px 0px;
+      }
+      #wrapper {
+        width: 540px;
+        margin: 0 auto;
+        padding: 0 px;
+      }
+      #main {
+        float: left;
+        text-align: right;
+        background-color: #fff;
+        padding: 0px 30px 30px 0px;
+        margin: 0px;
+          }
+      h3 {
+        font-size: 2em;
+      }
+      h5 {
+        font-size: 1em;
+      }
+      h6 {
+        position: relative;
+        top: -2em;
+        margin-bottom: 0px;
+      }
+      #threecanvas {
+        padding: 20px;
+        float: left;
+      }
+      .right {
+        text-align: right;
+      }
+      a, a:visited {
+        color: blue;
+      }
+      a:hover {
+        color: red;
+      }
+      #thumb {
+        width:100%;
+        border: 0px;
+        padding: 0px;
+      }
+      .pop {
+        color:red;
+        font-weight: bold;
+        font-size: 0.7em;
+      }
     </style>
 </head>
 <body>
