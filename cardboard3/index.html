@@ -203,7 +203,10 @@
           object.rotateY(a/2);
         }
       });
-      //meshc.rotation.copy(camera.rotation);
+      meshc.rotation.copy(camera.rotation);
+      meshc.rotateX(0.78);
+      meshc.rotateZ(0);
+      meshc.rotateY(0.78);
 
       requestAnimationFrame(animate);
 
