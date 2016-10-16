@@ -125,12 +125,12 @@
       //hud cube
       var geometryc = new THREE.BoxGeometry( 10, 10, 10 );
       var materials = [
-        new THREE.MeshBasicMaterial(),
-        new THREE.MeshBasicMaterial(),
-        new THREE.MeshBasicMaterial(),
-        new THREE.MeshBasicMaterial(),
-        new THREE.MeshBasicMaterial(),
-        new THREE.MeshLambertMaterial({ map: THREE.ImageUtils.loadTexture('textures/hud.png'), transparent: true, side: THREE.DoubleSide })
+        new THREE.MeshBasicMaterial({ visible: false }),
+        new THREE.MeshBasicMaterial({ visible: false }),
+        new THREE.MeshBasicMaterial({ visible: false }),
+        new THREE.MeshBasicMaterial({ visible: false }),
+        new THREE.MeshBasicMaterial({ visible: false }),
+        new THREE.MeshBasicMaterial({ map: THREE.ImageUtils.loadTexture('textures/hud.png'), transparent: true, side: THREE.BackSide })
       ];
 
       var materialc = new THREE.MeshFaceMaterial( materials );
@@ -215,7 +215,7 @@
 
       //copy rotation from camera to hud
       var qm = new THREE.Quaternion();
-      THREE.Quaternion.slerp(meshc.quaternion, camera.quaternion, qm, 0.09);
+      THREE.Quaternion.slerp(meshc.quaternion, camera.quaternion, qm, 0.1);
       meshc.quaternion.copy(qm);
       meshc.quaternion.normalize();
 
