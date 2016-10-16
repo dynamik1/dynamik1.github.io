@@ -67,10 +67,11 @@
 
     //stereo effect
       effect = new THREE.StereoEffect(renderer);
+      effect.eyeSeparation = 10;
       scene = new THREE.Scene();
 
     //camera
-      camera = new THREE.PerspectiveCamera(90, 1, 0.001, 700);
+      camera = new THREE.PerspectiveCamera(90, 1, 0.001, 200);
       camera.position.set(0, 20, 0);
       scene.add(camera);
 
