@@ -124,7 +124,16 @@
 
       //helmet?
       var geometryc = new THREE.BoxGeometry( 10, 10, 10 );
-      var materialc = new THREE.MeshBasicMaterial( { color: 0xffffff, wireframe: true } );
+      var materials = [
+        new THREE.MeshBasicMaterial({ color:0xff0000, transparent:true, opacity:0, side: THREE.DoubleSide }),
+        new THREE.MeshBasicMaterial({ color:0xffff00, transparent:true, opacity:0, side: THREE.DoubleSide }),
+        new THREE.MeshBasicMaterial({ color:0x00ff00, transparent:true, opacity:0, side: THREE.DoubleSide }),
+        new THREE.MeshBasicMaterial({ color:0xff00ff, transparent:true, opacity:0, side: THREE.DoubleSide }),
+        new THREE.MeshBasicMaterial({ color:0x0000ff, transparent:true, opacity:0, side: THREE.DoubleSide }),
+        new THREE.MeshLambertMaterial({ map: THREE.ImageUtils.loadTexture('textures/hud.png'), transparent: true, side: THREE.DoubleSide })
+      ];
+
+      var materialc = new THREE.MeshFaceMaterial( materials );
       meshc = new THREE.Mesh( geometryc, materialc );
       meshc.position.x = camera.position.x;
       meshc.position.y = camera.position.y;
@@ -204,9 +213,9 @@
         }
       });
       meshc.rotation.copy(camera.rotation);
-      meshc.rotateX(0.78);
-      meshc.rotateZ(0);
-      meshc.rotateY(0.78);
+      //meshc.rotateX(0.78);
+      //meshc.rotateZ(0);
+      //meshc.rotateY(0.78);
 
       requestAnimationFrame(animate);
 
