@@ -122,7 +122,7 @@
       mesh.receiveShadow = true;
       scene.add(mesh);
 
-      //helmet?
+      //hud cube
       var geometryc = new THREE.BoxGeometry( 10, 10, 10 );
       var materials = [
         new THREE.MeshBasicMaterial({ color:0xff0000, transparent:true, opacity:0, side: THREE.DoubleSide }),
@@ -212,10 +212,12 @@
           object.rotateY(a/2);
         }
       });
-      meshc.rotation.copy(camera.rotation);
-      //meshc.rotateX(0.78);
-      //meshc.rotateZ(0);
-      //meshc.rotateY(0.78);
+
+      //copy rotation from camera to hud
+      var qm = new THREE.Quaternion();
+      THREE.Quaternion.slerp(meshc.quaternion, camera.quaternion, qm, 0.09);
+      meshc.quaternion.copy(qm);
+      meshc.quaternion.normalize();
 
       requestAnimationFrame(animate);
 
